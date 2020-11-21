@@ -127,6 +127,7 @@ module File_descr_watcher = struct
       | Epoll_if_timerfd
       | Epoll
       | Select
+      | Io_uring
     [@@deriving sexp]
   end
 

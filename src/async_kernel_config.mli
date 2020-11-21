@@ -70,6 +70,7 @@ module File_descr_watcher : sig
     | Epoll_if_timerfd
     | Epoll
     | Select
+    | Io_uring
   [@@deriving sexp_of]
 end
 

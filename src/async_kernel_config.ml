@@ -14,6 +14,13 @@ module Epoll_max_ready_events = Validated.Make (struct
     let validate = Int.validate_positive
   end)
 
+module Io_uring_max_submission_entries = Validated.Make (struct
+    include Int
+
+    let here = [%here]
+    let validate = Int.validate_positive
+  end)
+
 module Max_inter_cycle_timeout = Validated.Make (struct
     include Time_ns.Span
 
@@ -143,6 +150,7 @@ type t =
   ; detect_invalid_access_from_thread : bool option [@sexp.option]
   ; dump_core_on_job_delay : Dump_core_on_job_delay.t option [@sexp.option]
   ; epoll_max_ready_events : Epoll_max_ready_events.t option [@sexp.option]
+  ; io_uring_max_submission_entries : Io_uring_max_submission_entries.t option [@sexp.option]
   ; file_descr_watcher : File_descr_watcher.t option [@sexp.option]
   ; max_inter_cycle_timeout : Max_inter_cycle_timeout.t option [@sexp.option]
   ; max_num_open_file_descrs : Max_num_open_file_descrs.t option [@sexp.option]
@@ -164,6 +172,7 @@ let empty =
   ; detect_invalid_access_from_thread = None
   ; dump_core_on_job_delay = None
   ; epoll_max_ready_events = None
+  ; io_uring_max_submission_entries = None
   ; file_descr_watcher = None
   ; max_inter_cycle_timeout = None
   ; max_num_open_file_descrs = None
@@ -205,6 +214,7 @@ let default =
   ; detect_invalid_access_from_thread = Some false
   ; dump_core_on_job_delay = Some Do_not_watch
   ; epoll_max_ready_events = Some (Epoll_max_ready_events.create_exn 256)
+  ; io_uring_max_submission_entries = Some (Io_uring_max_submission_entries.create_exn 512)
   ; file_descr_watcher = Some Epoll_if_timerfd
   ; max_inter_cycle_timeout = Some (Max_inter_cycle_timeout.create_exn (sec 0.05))
   ; max_num_open_file_descrs = Some Max_num_open_file_descrs.default
@@ -292,6 +302,14 @@ let field_descriptions () : string =
   will handle.
 |}
            ])
+      ~io_uring_max_submission_entries:
+        (field
+          [%sexp_of: Io_uring_max_submission_entries.t]
+          [ {|
+  The size of the submission queue to request when creating an
+  [Io_uring.t] for Async's file descriptor watcher.
+|}
+          ])
       ~file_descr_watcher:
         (field
            [%sexp_of: File_descr_watcher.t]
@@ -511,6 +529,7 @@ let abort_after_thread_pool_stuck_for = !!Fields.abort_after_thread_pool_stuck_f
 let check_invariants = !!Fields.check_invariants
 let detect_invalid_access_from_thread = !!Fields.detect_invalid_access_from_thread
 let epoll_max_ready_events = !!Fields.epoll_max_ready_events
+let io_uring_max_submission_entries = !!Fields.io_uring_max_submission_entries
 let thread_pool_cpu_affinity = !!Fields.thread_pool_cpu_affinity
 let file_descr_watcher = !!Fields.file_descr_watcher
 let max_inter_cycle_timeout = !!Fields.max_inter_cycle_timeout
@@ -530,6 +549,7 @@ let t =
   ; dump_core_on_job_delay = Some dump_core_on_job_delay
   ; thread_pool_cpu_affinity = Some thread_pool_cpu_affinity
   ; epoll_max_ready_events = Some epoll_max_ready_events
+  ; io_uring_max_submission_entries = Some io_uring_max_submission_entries
   ; file_descr_watcher = Some file_descr_watcher
   ; max_inter_cycle_timeout = Some max_inter_cycle_timeout
   ; max_num_open_file_descrs = Some max_num_open_file_descrs

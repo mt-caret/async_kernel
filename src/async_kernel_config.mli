@@ -13,6 +13,7 @@
 open! Core_kernel
 module Epoll_max_ready_events : Validated.S with type raw := int
 module Io_uring_max_submission_entries : Validated.S with type raw := int
+module Io_uring_max_completion_entries : Validated.S with type raw := int
 module Max_inter_cycle_timeout : Validated.S with type raw := Time_ns.Span.t
 module Min_inter_cycle_timeout : Validated.S with type raw := Time_ns.Span.t
 module Max_num_threads : Validated.S with type raw := int
@@ -82,6 +83,7 @@ type t =
   ; dump_core_on_job_delay : Dump_core_on_job_delay.t option
   ; epoll_max_ready_events : Epoll_max_ready_events.t option
   ; io_uring_max_submission_entries : Io_uring_max_submission_entries.t option
+  ; io_uring_max_completion_entries : Io_uring_max_completion_entries.t option
   ; file_descr_watcher : File_descr_watcher.t option
   ; max_inter_cycle_timeout : Max_inter_cycle_timeout.t option
   ; max_num_open_file_descrs : Max_num_open_file_descrs.t option
@@ -126,6 +128,7 @@ val dump_core_on_job_delay : Dump_core_on_job_delay.t
 val thread_pool_cpu_affinity : Thread_pool_cpu_affinity.t
 val epoll_max_ready_events : Epoll_max_ready_events.t
 val io_uring_max_submission_entries : Io_uring_max_submission_entries.t
+val io_uring_max_completion_entries : Io_uring_max_completion_entries.t
 val file_descr_watcher : File_descr_watcher.t
 val max_inter_cycle_timeout : Max_inter_cycle_timeout.t
 val max_num_jobs_per_priority_per_cycle : Max_num_jobs_per_priority_per_cycle.t
